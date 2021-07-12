@@ -32,7 +32,7 @@
         android:paddingTop="15dp"
         android:paddingEnd="12dp"
         android:paddingBottom="15dp"
-        android:textColor="@color/teal_200"
+        android:textColor="@color/black"
         android:textSize="15sp"
         tools:text="Hello World!"
         />
