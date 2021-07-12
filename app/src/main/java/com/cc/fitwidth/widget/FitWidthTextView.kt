@@ -196,7 +196,7 @@ class FitWidthTextView @kotlin.jvm.JvmOverloads constructor(
         totalHeight += if (mParagraphMultiplier > lineSpacingMultiplier) {
           lineHeight * (mParagraphMultiplier - lineSpacingMultiplier)
         } else 0f
-        start = i
+        start = i + 1 //让下一段的裁切跳过换行符，否则会导致测量长度变长
       } else { //正常字符，测量宽度后计算是否换行
         val w = mPaint.measureText(content, start, i + 1)
         when {
@@ -215,7 +215,6 @@ class FitWidthTextView @kotlin.jvm.JvmOverloads constructor(
                 emojiRange.end
               }
               totalHeight += lineHeight + lineHeight * (lineSpacingMultiplier - 1f)  //文字高度+行间距
-
             } else {
               temList.add(dealBreakLine(content.subSequence(start, i)))
               totalHeight += lineHeight + lineHeight * (lineSpacingMultiplier - 1f)  //文字高度+行间距
