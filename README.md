@@ -1,4 +1,4 @@
-# FitWidthTextView(解决换行参差不齐)
+# FitWidthTextView(解决TextView中英文排版参差不齐的问题)
 感谢[Emoji](https://github.com/vanniktech/Emoji)提供判断Emoji逻辑
 感谢[LineBreakTextView](https://github.com/changer0/LineBreakTextView)提供参考
 感谢[MTextView](https://github.com/yellowcath/MTextView)提供参考
