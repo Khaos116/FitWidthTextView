@@ -15,7 +15,7 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="50dp"
         android:gravity="center|bottom"
         android:padding="15dp"
         android:text="FitWidthTextView(强制左对齐)"
@@ -23,24 +23,33 @@
         tools:ignore="HardcodedText"
         />
 
-    <com.cc.fitwidth.widget.FitWidthTextView
-        android:id="@+id/mainTv1"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#33ff00ff"
+        android:background="#22ff00ff"
         android:paddingStart="12dp"
         android:paddingTop="15dp"
         android:paddingEnd="12dp"
         android:paddingBottom="15dp"
-        android:textColor="@color/black"
-        android:textSize="15sp"
-        tools:text="Hello World!"
-        />
+        >
+
+      <com.cc.fitwidth.widget.FitWidthTextView
+          android:id="@+id/mainTv1"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="#33ff00ff"
+          android:textColor="@color/black"
+          android:textSize="15sp"
+          tools:text="This is a TextView that solves the uneven line breaks of mixed text such as Chinese, English, and characters.
+At the same time, it solves the problem that other custom line breaks on the Internet cause Emoji expressions to be separated and displayed abnormally.
+There may be some compatibility issues, so let's improve it together."
+          />
+    </FrameLayout>
 
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="50dp"
         android:gravity="center|bottom"
         android:padding="15dp"
         android:text="普通TextView"
@@ -48,18 +57,27 @@
         tools:ignore="HardcodedText"
         />
 
-    <TextView
-        android:id="@+id/mainTv2"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#3300fff0"
+        android:background="#110000ff"
         android:paddingStart="12dp"
         android:paddingTop="15dp"
         android:paddingEnd="12dp"
         android:paddingBottom="15dp"
-        android:textColor="@color/black"
-        android:textSize="15sp"
-        tools:text="Hello World!"
-        />
+        >
+
+      <TextView
+          android:id="@+id/mainTv2"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="#3300fff0"
+          android:textColor="@color/black"
+          android:textSize="15sp"
+          tools:text="This is a TextView that solves the uneven line breaks of mixed text such as Chinese, English, and characters.
+At the same time, it solves the problem that other custom line breaks on the Internet cause Emoji expressions to be separated and displayed abnormally.
+There may be some compatibility issues, so let's improve it together."
+          />
+    </FrameLayout>
   </LinearLayout>
 </ScrollView>
