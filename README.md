@@ -1,7 +1,8 @@
 # FitWidthTextView  
-### 解决TextView中英文排版参差不齐的问题  
+### 解决TextView中英文排版自动换行参差不齐的问题  
 ### 解决TextView提前换行问题  
 ### 解决TextView提前断行问题  
+### 解决自定义文字绘制Emoji兼容问题  
 
 ### 下载演示[Demo](https://raw.githubusercontent.com/Khaos116/FitWidthTextView/master/APK/FitWidthTextView_1.0.0.apk)
 
