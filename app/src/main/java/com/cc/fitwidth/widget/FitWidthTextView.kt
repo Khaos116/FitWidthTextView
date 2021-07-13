@@ -220,6 +220,11 @@ class FitWidthTextView @kotlin.jvm.JvmOverloads constructor(
               totalHeight += lineHeight + lineHeight * (lineSpacingMultiplier - 1f)  //文字高度+行间距
               start = i
             }
+            //如果最后一个字符要换行
+            if (i == content.indices.last) {
+              temList.add(dealBreakLine(content.subSequence(start, content.length)))
+              totalHeight += lineHeight //最后一行不添加行间距
+            }
           }
           else -> { //不换行
             if (i == content.indices.last) { //最后一行
