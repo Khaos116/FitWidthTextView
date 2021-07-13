@@ -9,15 +9,15 @@
 感谢[LineBreakTextView](https://github.com/changer0/LineBreakTextView)提供参考  
 感谢[MTextView](https://github.com/yellowcath/MTextView)提供参考  
 //================================================================//
-##  纯中文(貌似和原TextView无区别)
+##  中文(貌似和原TextView无区别)
 ![所有效果](https://github.com/Khaos116/FitWidthTextView/blob/master/image/1.png)
 
 //================================================================//
-##  纯英文文(解决换行问题)
+##  英文(解决换行问题)
 ![聊天Emoji](https://github.com/Khaos116/FitWidthTextView/blob/master/image/2.png)
 
 //================================================================//
-##  纯Emoji(貌似和原TextView无区别)
+##  Emoji(貌似和原TextView无区别)
 ![封面和压缩](https://github.com/Khaos116/FitWidthTextView/blob/master/image/3.png)
 
 //================================================================//
