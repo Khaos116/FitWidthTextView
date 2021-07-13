@@ -1,6 +1,10 @@
 package com.cc.fitwidth.widget
 
+import android.graphics.Color
 import android.os.Bundle
+import android.text.*
+import android.text.style.BackgroundColorSpan
+import android.text.style.ForegroundColorSpan
 import androidx.appcompat.app.AppCompatActivity
 import com.cc.fitwidth.R
 import kotlinx.android.synthetic.main.activity_main.mainTv1
@@ -38,10 +42,23 @@ class MainActivity : AppCompatActivity() {
   private val text4 =
     "\uD83D\uDC36\uD83D\uDC30\uD83E\uDD8A\uD83D\uDC3C\uD83D\uDC2F\uD83D\uDC35\uD83D\uDC37\uD83D\uDC2E\uD83E\uDD81\uD83D\uDC28\uD83D\uDC14\uD83C\uDF3F\uD83C\uDF40\uD83C\uDDE8\uD83C\uDDF3 This is english split\uD83C\uDF38\uD83C\uDF39\uD83C\uDF34\uD83C\uDF32\uD83C\uDF53\uD83C\uDF4E\uD83C\uDF49\uD83C\uDF4F\uD83C\uDF51\uD83C\uDF89\uD83D\uDEB2 中文也会被拆分 \uD83C\uDFC5\uD83D\uDDFD\uD83D\uDC6B\uD83C\uDF1D\uD83D\uDCAF\uD83D\uDC58\uD83D\uDC57 轻浮的女子 Flibbertigibbet \uD83E\uDD22\uD83E\uDD9A\uD83D\uDC71\uD83C\uDFFB\u200D♀️\uD83D\uDD1E\uD83D\uDE45\uD83C\uDFFB\u200D♀️\uD83D\uDC69\uD83C\uDFFB\u200D\uD83D\uDCBB\uD83C\uDFE9\uD83D\uDC69\u200D\uD83D\uDC69\u200D\uD83D\uDC67\u200D\uD83D\uDC67㍿⚅㎇㍰▓\uD83D\uDCBB\uD83C\uDE32\uD83D\uDEB4\uD83C\uDFFB\u200D♂️\uD83C\uDDEC\uD83C\uDDE7✈️"
 
+  //Span测试
+  private val text5 = SpannableStringBuilder()
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
-    val index = System.currentTimeMillis() % 4
+    val index = System.currentTimeMillis() % 5
+    val span1 = SpannableString("换行参差不齐")
+    span1.setSpan(BackgroundColorSpan(Color.LTGRAY), 0, span1.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    val span2 = SpannableString("Emoji表情被分隔显示异常")
+    span2.setSpan(ForegroundColorSpan(Color.RED), 0, span2.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    //Span添加
+    text5.append("这是一个解决中文、英文、字符等混合文字")
+      .append(span1)
+      .append("的文字控件。\n同时解决网上其他自定义换行导致")
+      .append(span2)
+      .append("的问题。\n可能会存在一些兼容性问题，大家一起完善吧。")
     //默认带有段落缩进，这里为了对比，去掉缩进
     mainTv1.mParagraphSpace = ""
     //设置段间距倍数(倍数为文字绘制高度的倍数)
@@ -51,7 +68,8 @@ class MainActivity : AppCompatActivity() {
       1L -> text1
       2L -> text2
       3L -> text3
-      else -> text4
+      4L -> text4
+      else -> text5
     }
     //两种显示对比
     mainTv1.text = text
