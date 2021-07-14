@@ -49,14 +49,18 @@ class MainActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
     val index = System.currentTimeMillis() % 5
+    val span = SpannableString("中文")
+    span.setSpan(ForegroundColorSpan(Color.RED), 0, span.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
     val span1 = SpannableString("换行参差不齐")
     span1.setSpan(BackgroundColorSpan(Color.LTGRAY), 0, span1.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
     val span2 = SpannableString("Emoji表情被分隔显示异常")
     span2.setSpan(ForegroundColorSpan(Color.RED), 0, span2.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
     //Span添加
-    text5.append("这是一个解决中文、英文、字符等混合文字")
+    text5.append("这是一个解决")
+      .append(span)
+      .append("、英文、字符等混合文字")
       .append(span1)
-      .append("的文字控件。\n同时解决网上其他自定义换行导致")
+      .append("的文字控件。    \n               \n  \n  \n          \n     \n     同时解决网上其他        自定义换行导致")
       .append(span2)
       .append("的问题。\n可能会存在一些兼容性问题，大家一起完善吧。")
     //默认带有段落缩进，这里为了对比，去掉缩进
@@ -72,7 +76,7 @@ class MainActivity : AppCompatActivity() {
       else -> text5
     }
     //两种显示对比
-    mainTv1.text = text
-    mainTv2.text = text
+    mainTv1.text = text5
+    mainTv2.text = text5
   }
 }

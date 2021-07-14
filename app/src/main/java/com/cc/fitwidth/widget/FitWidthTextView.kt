@@ -1,12 +1,16 @@
 package com.cc.fitwidth.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
-import android.text.SpannableStringBuilder
-import android.text.TextPaint
+import android.text.*
+import android.text.style.*
 import android.util.AttributeSet
+import android.util.Log
 import androidx.appcompat.widget.AppCompatTextView
 import com.cc.fitwidth.widget.emoji.EmojiManager
+import com.cc.fitwidth.widget.emoji.core.Range
+import com.cc.fitwidth.widget.emoji.core.RangeBean
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -38,8 +42,8 @@ class FitWidthTextView @kotlin.jvm.JvmOverloads constructor(
   defStyleAttr: Int = 0
 ) : AppCompatTextView(context, attrs, defStyleAttr) {
   //<editor-fold defaultstate="collapsed" desc="变量">
-  //分段文字
-  private var mLineList = mutableListOf<CharSequence>()
+  //分段文字(每段文字由"整行文字"+"类型:0普通1背景色2前景色3背景和前景色"+"开始+结束位置+颜色")
+  private var mLineList = mutableListOf<RangeBean>()
 
   //用于测量字符宽度
   private var mPaint = TextPaint()
@@ -57,7 +61,7 @@ class FitWidthTextView @kotlin.jvm.JvmOverloads constructor(
   var mMaxConsecutiveSpace: Int = 4
   //</editor-fold>
 
-  //<editor-fold defaultstate="collapsed" desc="重写">
+  ////<editor-fold defaultstate="collapsed" desc="重写">
   override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
     super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     if (text.isNotBlank()) {
@@ -82,6 +86,7 @@ class FitWidthTextView @kotlin.jvm.JvmOverloads constructor(
     requestLayout()
   }
 
+  @SuppressLint("DrawAllocation")
   override fun onDraw(canvas: Canvas) {
     mLineList.let { l ->
       //文字位置参考https://github.com/changer0/LineBreakTextView  貌似绘制位置是以baseline为准的
@@ -92,15 +97,36 @@ class FitWidthTextView @kotlin.jvm.JvmOverloads constructor(
       val lineHeight = fontMetrics.bottom - fontMetrics.top
       //每行累计高度
       var drawHeight = paddingTop * 1f
-      l.forEach { s ->
+      l.forEach { b ->
+        val s = b.sb
         if (s.toString() != "\n") {
-          //mPaint.color = Color.MAGENTA
-          //canvas.drawLine(paddingStart * 1f, drawHeight, (width - paddingEnd) * 1f, drawHeight, mPaint)
-          mPaint.color = currentTextColor
-          if (s.length > 1 && !s.startsWith("  ")) {
-            canvas.drawText(s, 0, s.length, paddingStart * 1f, drawHeight + offSet, mPaint)
-          } else {
-            canvas.drawText(s, 0, s.length, paddingStart * 1f, drawHeight + offSet, mPaint)
+          for (range in b.ranges) {
+            when (range.type) {
+              1 -> { //背景
+                mPaint.color = range.bgColor
+                val start = paddingStart * 1f + mPaint.measureText(s, 0, range.start)
+                val end = start + paddingStart * 1f + mPaint.measureText(s, range.start, range.end)
+                canvas.drawRect(start, drawHeight, end, drawHeight + drawHeight, mPaint)
+              }
+              2 -> { //前景
+                mPaint.color = range.foreColor
+                val start = paddingStart * 1f + mPaint.measureText(s, 0, range.start)
+                canvas.drawText(s, range.start, range.end, start, drawHeight + offSet, mPaint)
+              }
+              3 -> { //背景+前景
+                mPaint.color = range.bgColor
+                val start = paddingStart * 1f + mPaint.measureText(s, 0, range.start)
+                val end = start + paddingStart * 1f + mPaint.measureText(s, range.start, range.end)
+                canvas.drawRect(start, drawHeight, end, drawHeight + drawHeight, mPaint)
+                mPaint.color = range.foreColor
+                canvas.drawText(s, range.start, range.end, start, drawHeight + offSet, mPaint)
+              }
+              else -> { //普通
+                mPaint.color = currentTextColor
+                val start = paddingStart * 1f + mPaint.measureText(s, 0, range.start)
+                canvas.drawText(s, range.start, range.end, start, drawHeight + offSet, mPaint)
+              }
+            }
           }
           drawHeight += lineHeight + lineHeight * (lineSpacingMultiplier - 1f)
         } else {
@@ -126,13 +152,15 @@ class FitWidthTextView @kotlin.jvm.JvmOverloads constructor(
   private var mLastHeight: Float = 0f
   private var mLastTextSize: Float = 0f
 
-  //测量高度
+  //测量高度(Span不能被破坏，否则会找不到起始位置，所以先进行span的保留)
   private fun measureContentHeight(text: CharSequence, availableWidth: Int): Float {
+    //----------------------------------防止重复走----------------------------------//
+    if (text.isBlank()) return 0f
     if (mLastCs == text && mLastAvailableWidth == availableWidth && mLastTextSize == textSize) return mLastHeight
     mLastCs = text
     mLastTextSize = textSize
     mLastAvailableWidth = availableWidth
-    //没有中文缩进自动减半
+    //----------------------------------没有中文缩进自动减半----------------------------------//
     var tempSpaceFirst = mFirstParagraphSpace
     if (mFirstParagraphSpace.length > 2 && !isContainChinese(text.toString())) {
       tempSpaceFirst = mFirstParagraphSpace.substring(mFirstParagraphSpace.length / 2)
@@ -141,6 +169,40 @@ class FitWidthTextView @kotlin.jvm.JvmOverloads constructor(
     if (mParagraphSpace.length > 2 && !isContainChinese(text.toString())) {
       tempSpace = mParagraphSpace.substring(mParagraphSpace.length / 2)
     }
+    //----------------------------------Span分隔(文字+颜色)----------------------------------//
+    val splits = mutableListOf<RangeBean>()
+    if (text is SpannedString) {
+      val spans = text.getSpans(0, text.length, CharacterStyle::class.java)
+      if (spans.isNullOrEmpty()) { //没有找到span
+        splits.add(RangeBean(dealSpaceBreak(text)))
+      } else {
+        var index = 0
+        for (span in spans) { //将普通文本和Span分隔
+          val start = text.getSpanStart(span)
+          val end = text.getSpanEnd(span)
+          if (start > index) { //添加非span
+            splits.add(RangeBean(dealSpaceBreak(text.subSequence(index, start))))
+          }
+          //获取当前span文本
+          val txt = text.subSequence(start, end)
+          //判断span
+          if (span is BackgroundColorSpan && span is ForegroundColorSpan) {
+            splits.add(RangeBean(txt, mutableListOf(Range(type = 3, bgColor = span.backgroundColor, foreColor = span.foregroundColor))))
+          } else if (span is BackgroundColorSpan) {
+            splits.add(RangeBean(txt, mutableListOf(Range(type = 1, bgColor = span.backgroundColor))))
+          } else if (span is ForegroundColorSpan) {
+            splits.add(RangeBean(txt, mutableListOf(Range(type = 2, foreColor = span.foregroundColor))))
+          } else {
+            splits.add(RangeBean(dealSpaceBreak(txt)))
+          }
+          index = end
+        }
+        if (index < text.length) splits.add(RangeBean(dealSpaceBreak(text.subSequence(index, text.length))))
+      }
+    } else {
+      splits.add(RangeBean(dealSpaceBreak(text)))
+    }
+    //----------------------------------换行分隔----------------------------------//
     //处理换行和缩进
     val content = SpannableStringBuilder()
     //防止空格太多
@@ -169,7 +231,7 @@ class FitWidthTextView @kotlin.jvm.JvmOverloads constructor(
     //找出所有emoji表情
     val emojis = EmojiManager.getInstance().findAllEmojis(content)
     //临时列表
-    val temList = mutableListOf<CharSequence>()
+    val temList = mutableListOf<SpannableStringBuilder>()
     //最大可用宽度，需要减去paddingStart和paddingEnd
     val maxWidth = if (availableWidth <= 0) context.resources.displayMetrics.widthPixels - paddingStart - paddingEnd else availableWidth
     //每行拆分相对于原始数据的开始位置
@@ -191,7 +253,7 @@ class FitWidthTextView @kotlin.jvm.JvmOverloads constructor(
           temList.add(dealBreakLine(content.subSequence(start, i)))
           totalHeight += lineHeight + lineHeight * (lineSpacingMultiplier - 1f) //文字高度+行间距
         }
-        temList.add("\n")
+        temList.add(SpannableStringBuilder("\n"))
         //如果段间距不大于行间距，则不添加行间距;否则添加间距为"段间距-行间距"(因为默认底部有一个行间距)
         totalHeight += if (mParagraphMultiplier > lineSpacingMultiplier) {
           lineHeight * (mParagraphMultiplier - lineSpacingMultiplier)
@@ -235,10 +297,61 @@ class FitWidthTextView @kotlin.jvm.JvmOverloads constructor(
         }
       }
     }
+    val newList = mutableListOf<RangeBean>()
+    //处理Span
+    temList.forEach { ss ->
+      val tList = mutableListOf<Range>()
+      tList.add(Range(0, ss.length))
+      //-------------------
+      for (i in ss.indices) {
+        val char = ss.subSequence(i, i + 1)
+        val isBg = char is BackgroundColorSpan
+        val isFore = char is ForegroundColorSpan
+        Log.e("Khaos", "isBg=${isBg};isFore=$isFore")
+      }
+      //var i = 0
+      //var next = 0
+      //while (i < ss.length) {
+      //  next = ss.nextSpanTransition(i, ss.length, CharacterStyle::class.java)
+      //  if (i == 0 && next > 0) { //最开头不是Span
+      //    if (next >= ss.length) { //整行都没有span
+      //      tList.add(Range(0, ss.length))//直接添加整行
+      //      break
+      //    } else {//中间存在span
+      //      tList.add(Range(0, next))//添加第一个span之前的文本
+      //    }
+      //  }
+      //  i=next
+      //}
+      //-------------------
+      newList.add(RangeBean(ss, tList))
+    }
     mLineList.clear()
-    mLineList.addAll(temList)
+    mLineList.addAll(newList)
     mLastHeight = totalHeight + paddingTop + paddingBottom
     return mLastHeight
+  }
+
+  //普通文本处理多个空白行和空格保留问题
+  private fun dealSpaceBreak(cs: CharSequence): CharSequence {
+    val sb = StringBuilder() //处理后的文本
+    val sbSpace = StringBuilder() //临时存放空格，可以设置最大连续数量
+    for (c in cs) { //遍历每个字符
+      if (c.toString() == "\r") continue //不处理
+      if (c.toString() == " " || c.toString() == "\t") { //空格处理
+        if (sb.isNotEmpty() && !sb.toString().endsWith("\n") && sbSpace.length < mMaxConsecutiveSpace) sbSpace.append(" ") //文本最开始不加空格，超过最大数量不加空格
+      } else if (c.toString() == "\n") {
+        if (sbSpace.isNotEmpty()) sbSpace.delete(0, sbSpace.length) //遇到换行则把想要添加的空格移除，直接添加换行符
+        if (sb.isNotEmpty() && !sb.toString().endsWith("\n")) sb.append("\n") //文本不为空，且不以换行结尾才添加换行
+      } else {
+        if (sbSpace.isNotEmpty()) { //文本中间需要的空格添加
+          sb.append(sbSpace.toString())
+          sbSpace.delete(0, sbSpace.length) //添加完成后删除临时空格
+        }
+        sb.append(c) //正常添加字符
+      }
+    }
+    return sb
   }
 
   //换行处理
