@@ -64,7 +64,8 @@ class MainActivity : AppCompatActivity() {
       .append(span2)
       .append("的问题。\n可能会存在一些兼容性问题，大家一起完善吧。")
     //默认带有段落缩进，这里为了对比，去掉缩进
-    mainTv1.mParagraphSpace = ""
+    mainTv1.mFirstParagraphSpace = mainTv1.mParagraphSpace
+    //mainTv1.mParagraphSpace = ""
     //设置段间距倍数(倍数为文字绘制高度的倍数)
     mainTv1.mParagraphMultiplier = 1.5f
     //随机设置文字
