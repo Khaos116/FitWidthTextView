@@ -111,7 +111,7 @@ class FitWidthTextView @kotlin.jvm.JvmOverloads constructor(
               mPaint.color = rangeBg.bgColor
               val start = paddingStart * 1f + mPaint.measureText(s, 0, rangeBg.start)
               val end = start + paddingStart * 1f + mPaint.measureText(s, rangeBg.start, rangeBg.end)
-              canvas.drawRect(start, drawHeight, end, drawHeight + drawHeight, mPaint)
+              canvas.drawRect(start, drawHeight, end, drawHeight + lineHeight, mPaint)
             }
           }
           //绘制文本
@@ -227,9 +227,9 @@ class FitWidthTextView @kotlin.jvm.JvmOverloads constructor(
       val w = mPaint.measureText(remainSb, 0, remainSb.length)
       if (w < availableWidth && !remainSb.toString().contains("\n")) { //填不满宽度并且没有换行符，累计临时值
         if (index == splits.size - 1) { //如果是最后一个了
-          resultList.add(RangeBean(remainSb, remainRange))
+          resultList.add(RangeBean(remainSb.subSequence(0, remainSb.length), remainRange))
           remainSb.delete(0, remainSb.length)
-          remainRange.clear()
+          remainRange = mutableListOf()
           break
         } else continue
       } else { //大于宽度，需要裁切
@@ -246,7 +246,7 @@ class FitWidthTextView @kotlin.jvm.JvmOverloads constructor(
               //被裁切的span
               val splitRange = remainRange.filter { r -> r.end < (txt.length + 1) }.toMutableList()
               //span被分隔的处理
-              val cutSpan = remainRange.firstOrNull { f -> (txt.length + 1) in f.end..f.end }
+              val cutSpan = remainRange.firstOrNull { f -> (txt.length + 1) in f.start..f.end }
               //新余下的span
               remainRange = remainRange.filter { r -> r.start > (txt.length + 1) }.map { r ->
                 r.start -= (txt.length + 1)
@@ -289,7 +289,7 @@ class FitWidthTextView @kotlin.jvm.JvmOverloads constructor(
               //被裁切的span
               val splitRange = remainRange.filter { r -> r.end < txt.length }.toMutableList()
               //span被分隔的处理
-              val cutSpan = remainRange.firstOrNull { f -> txt.length in f.end..f.end }
+              val cutSpan = remainRange.firstOrNull { f -> txt.length in f.start..f.end }
               //新余下的span
               remainRange = remainRange.filter { r -> r.start > txt.length }.map { r ->
                 r.start -= txt.length
@@ -312,7 +312,7 @@ class FitWidthTextView @kotlin.jvm.JvmOverloads constructor(
         if (index == splits.size - 1 && remainSb.isNotEmpty()) {
           resultList.add(RangeBean(remainSb.subSequence(0, remainSb.length), remainRange))
           remainSb.delete(0, remainSb.length)
-          remainRange.clear()
+          remainRange = mutableListOf()
           break
         }
       }
