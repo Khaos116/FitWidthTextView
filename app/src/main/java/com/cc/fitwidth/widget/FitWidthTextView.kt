@@ -109,13 +109,14 @@ class FitWidthTextView @kotlin.jvm.JvmOverloads constructor(
               canvas.drawRect(start, drawHeight, end, drawHeight + lineHeight, mPaint)
             }
           }
-          //绘制文本
-          mPaint.color = currentTextColor
-          canvas.drawText(s, 0, s.length, paddingStart * 1f, drawHeight + offSet, mPaint)
-          //绘制前景
+          //分段绘制文本
           for (rangeFore in b.ranges) {
-            if (rangeFore.type == 2 || rangeFore.type == 3) {
+            if (rangeFore.type == 2 || rangeFore.type == 3) { //绘制有前景色的文本
               mPaint.color = rangeFore.foreColor
+              val start = paddingStart * 1f + mPaint.measureText(s, 0, rangeFore.start)
+              canvas.drawText(s, rangeFore.start, rangeFore.end, start, drawHeight + offSet, mPaint)
+            } else { //绘制普通文本
+              mPaint.color = currentTextColor
               val start = paddingStart * 1f + mPaint.measureText(s, 0, rangeFore.start)
               canvas.drawText(s, rangeFore.start, rangeFore.end, start, drawHeight + offSet, mPaint)
             }
@@ -316,6 +317,23 @@ class FitWidthTextView @kotlin.jvm.JvmOverloads constructor(
     var totalHeight = countBreak * (lineHeight * (mParagraphMultiplier - 1f)) + (resultList.size - countBreak) * (lineHeight * lineSpacingMultiplier)
     if (resultList.isNotEmpty()) totalHeight -= lineHeight * (lineSpacingMultiplier - 1f) //最后一行不要行间距
     mLastHeight = totalHeight + paddingTop + paddingBottom
+    //处理普通文字的范围
+    resultList.forEach { bean ->
+      if (bean.ranges.isEmpty()) { //没有span的情况
+        bean.ranges.add(Range(0, bean.sb.length))
+      } else { //有span的情况
+        val newList = mutableListOf<Range>()
+        var index = 0
+        for (range in bean.ranges) {
+          if (range.start > index) newList.add(Range(index, range.start))
+          newList.add(range)
+          index = range.end
+        }
+        if (index < bean.sb.length) newList.add(Range(index, bean.sb.length))
+        bean.ranges.clear()
+        bean.ranges.addAll(newList)
+      }
+    }
     mLineList.clear()
     mLineList.addAll(resultList)
     return mLastHeight
