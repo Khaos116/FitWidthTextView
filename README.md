@@ -11,7 +11,8 @@
 感谢[LineBreakTextView](https://github.com/changer0/LineBreakTextView)提供参考  
 感谢[MTextView](https://github.com/yellowcath/MTextView)提供参考  
 
-##### <font color="#006666">目前还不支持Span点击事件，有时间再完善</font>
+<table><tr><td bgcolor=#FF00FF>目前还不支持Span点击事件，有时间再完善</td></tr></table>  
+
 //================================================================//
 ##  中文(貌似和原TextView无区别)
 ![中文展示](https://github.com/Khaos116/FitWidthTextView/blob/master/image/1.png)
