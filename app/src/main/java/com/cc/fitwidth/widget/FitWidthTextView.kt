@@ -14,7 +14,7 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 /**
- * @Description 主要解决中英文符号换行参差不齐的问题
+ * @Description 主要解决TextView中英文符号换行参差不齐、提前断行/换行、Emoji兼容和Span兼容的问题
  *
  * 功能说明：
  *    1.FitWidthTextView解决了中英文符号等还可以显示就换行导致文本参差不齐的bug
