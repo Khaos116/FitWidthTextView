@@ -4,6 +4,8 @@
 ### 解决TextView提前断行问题  
 ### 解决其他自定义文本控件绘制Emoji不兼容问题  
 ### 解决其他自定义文本控件绘制Span不兼容问题  
+### 支持段落间距倍数设置、支持段落缩进空格设置
+### 自动化处理多个空白行、支持设置最大连续空格数(Span中的一律不处理)
 
 ### 下载演示[Demo](https://raw.githubusercontent.com/Khaos116/FitWidthTextView/master/APK/FitWidthTextView_1.1.0.apk)
 
