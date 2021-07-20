@@ -75,12 +75,7 @@ class FitWidthTextView @kotlin.jvm.JvmOverloads constructor(
       }
       val height: Int = when (heightMode) {
         MeasureSpec.EXACTLY -> heightSize
-        else -> try {
-          (measureContentHeight(text, width - paddingStart - paddingEnd) + 1).toInt()
-        } catch (e: Exception) {
-          e.printStackTrace()
-          100
-        }
+        else -> (measureContentHeight(text, width - paddingStart - paddingEnd) + 1).toInt()
       }
       setMeasuredDimension(width, height)
     }
@@ -96,7 +91,7 @@ class FitWidthTextView @kotlin.jvm.JvmOverloads constructor(
     mLineList.let { l ->
       //文字位置参考https://github.com/changer0/LineBreakTextView  貌似绘制位置是以baseline为准的
       val fontMetrics = mPaint.fontMetrics
-      //文字便宜量
+      //文字偏移量
       val offSet = mPaint.baselineShift - fontMetrics.top
       //文字实际绘制高度
       val lineHeight = fontMetrics.bottom - fontMetrics.top
