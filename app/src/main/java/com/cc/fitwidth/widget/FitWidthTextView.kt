@@ -482,10 +482,14 @@ class FitWidthTextView @kotlin.jvm.JvmOverloads constructor(
           }
         }
         MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> { //响应对应的pan事件
-          mPressRanges.firstOrNull { r -> r.clickSpan != null }?.clickSpan?.onClick(this)
-          mPressRanges.clear()
-          invalidate()
-          return true
+          if (mPressRanges.isNotEmpty()) {
+            mPressRanges.firstOrNull { r -> r.clickSpan != null }?.clickSpan?.onClick(this)
+            mPressRanges.clear()
+            invalidate()
+            return true
+          } else {
+            return super.onTouchEvent(event)
+          }
         }
         else -> {
         }

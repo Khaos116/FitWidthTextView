@@ -97,5 +97,8 @@ class MainActivity : AppCompatActivity() {
     //两种显示对比
     mainTv1.text = text
     mainTv2.text = text
+    mainTv1.setOnClickListener { v ->
+      Toast.makeText(v.context, "点击自定义文本控件", Toast.LENGTH_SHORT).show()
+    }
   }
 }
