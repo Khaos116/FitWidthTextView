@@ -58,11 +58,11 @@ class MainActivity : AppCompatActivity() {
     span2.setSpan(ForegroundColorSpan(Color.RED), 0, span2.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
     val span3 = SpannableString("最后以Span结尾。")
     span3.setSpan(ForegroundColorSpan(Color.BLUE), 0, span3.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-    val span4 = SpannableString("这是一个ClickSpan。")
+    val span4 = SpannableString("这是一个很长很长很长的ClickSpan，其长度必须要实现换行拆分到三行显示，如果还不够长，就继续添加显示文字，直到显示三行+。")
     span4.setSpan(
       MyClickSpan(
-        mNormalSpanColor = Color.BLACK,
-        mPressSpanColor = Color.RED,
+        mNormalSpanColor = Color.parseColor("#FF018786"),
+        mPressSpanColor = Color.parseColor("#009ACD"),
         showUnderLine = true,
       ) { v ->
         Toast.makeText(v.context, span4, Toast.LENGTH_SHORT).show()
