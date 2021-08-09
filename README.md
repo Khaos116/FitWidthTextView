@@ -12,7 +12,7 @@
 感谢[LineBreakTextView](https://github.com/changer0/LineBreakTextView)提供参考  
 感谢[MTextView](https://github.com/yellowcath/MTextView)提供参考  
 
-<table><tr><td bgcolor=#FF00FF>目前还不支持Span点击事件，有时间再完善</td></tr></table>  
+<table><tr><td bgcolor=#FF00FF>目前仅支持前景/背景类型的Span以及自定义的MyClickSpan</td></tr></table>  
 
 //================================================================//
 ##  中文(貌似和原TextView无区别)
@@ -31,5 +31,6 @@
 ![混合展示](https://github.com/Khaos116/FitWidthTextView/blob/master/image/4.png)
 
 //================================================================//
-##  Span展示(暂时只支持前景和背景类型的Span)
-![Span展示](https://github.com/Khaos116/FitWidthTextView/blob/master/image/5.png)
+##  Span展示(只支持前景/背景类型的Span+MyClickSpan)
+![Span展示](https://github.com/Khaos116/FitWidthTextView/blob/master/image/5.png)  
+![MyClickSpan展示](https://github.com/Khaos116/FitWidthTextView/blob/master/image/6.gif) 
