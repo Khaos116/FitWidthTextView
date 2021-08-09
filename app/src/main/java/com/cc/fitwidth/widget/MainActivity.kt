@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.*
 import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.cc.fitwidth.R
 import kotlinx.android.synthetic.main.activity_main.mainTv1
@@ -57,6 +58,16 @@ class MainActivity : AppCompatActivity() {
     span2.setSpan(ForegroundColorSpan(Color.RED), 0, span2.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
     val span3 = SpannableString("最后以Span结尾。")
     span3.setSpan(ForegroundColorSpan(Color.BLUE), 0, span3.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    val span4 = SpannableString("这是一个ClickSpan。")
+    span4.setSpan(
+      MyClickSpan(
+        mNormalSpanColor = Color.BLACK,
+        mPressSpanColor = Color.RED,
+        showUnderLine = true,
+      ) { v ->
+        Toast.makeText(v.context, span4, Toast.LENGTH_SHORT).show()
+      }, 0, span4.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+    )
     //Span添加
     text5.append("这是一个解决")
       .append(span)
@@ -66,6 +77,7 @@ class MainActivity : AppCompatActivity() {
       .append(span2)
       .append("的问题。\n可能会存在一些兼容性问题，大家\n一起完善吧。")
       .append(span3)
+      .append(span4)
     //默认带有段落缩进，这里为了对比，去掉缩进
     if (index == 0L) {
       mainTv1.mFirstParagraphSpace = mainTv1.mParagraphSpace
