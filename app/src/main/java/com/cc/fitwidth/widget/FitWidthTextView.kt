@@ -31,7 +31,7 @@ import java.util.regex.Pattern
  *    5.由于采用的for循环处理文本，所以如果文本太长可能导致ANR，需要自己修改处理文本部分
  *    6.为了防止多次测量文本高度，采用了临时变量的方式防止重复测量，如果遇到测量问题，可能需要修改
  *    7.由于Emoji一直在更新，所以可能遇到Emoji数据显示不全的问题，这需要更新Emoji库
- *    8.只支持前景和背景色改变的Span
+ *    8.支持前景和背景色改变的Span、MyClickSpan
  *
  * @Author：Khaos
  * @Date：2021-07-10
