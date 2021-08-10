@@ -6,7 +6,7 @@
 ### 支持段落间距倍数设置、支持段落缩进空格设置
 ### 自动化处理多个空白行、支持设置最大连续空格数(Span中的一律不处理)
 
-### 下载演示[Demo](https://raw.githubusercontent.com/Khaos116/FitWidthTextView/master/APK/FitWidthTextView_1.1.0.apk)
+### 下载演示[Demo](https://raw.githubusercontent.com/Khaos116/FitWidthTextView/master/APK/FitWidthTextView_1.2.0.apk)
 
 感谢[Emoji](https://github.com/vanniktech/Emoji)提供判断Emoji逻辑   
 感谢[LineBreakTextView](https://github.com/changer0/LineBreakTextView)提供参考  
