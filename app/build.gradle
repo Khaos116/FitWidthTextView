@@ -11,8 +11,8 @@ android {
     applicationId "com.cc.fitwidth"
     minSdkVersion 23
     targetSdkVersion 30
-    versionCode 110
-    versionName "1.1.0"
+    versionCode 120
+    versionName "1.2.0"
   }
 
   //配置不同版本的keystore
