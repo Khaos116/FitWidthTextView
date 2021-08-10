@@ -13,6 +13,8 @@ android {
     targetSdkVersion 30
     versionCode 120
     versionName "1.2.0"
+    //APK名称
+    archivesBaseName = "FitWidthTextView_v$versionName"
   }
 
   //配置不同版本的keystore
