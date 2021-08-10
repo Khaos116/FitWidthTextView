@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
-    val index = System.currentTimeMillis() % 5
+    val index = System.currentTimeMillis() % 6
     val span = SpannableString("中文")
     span.setSpan(ForegroundColorSpan(Color.RED), 0, span.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
     val span1 = SpannableString("换行参差不齐")
